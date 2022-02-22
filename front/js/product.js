@@ -32,7 +32,6 @@ urlProduct
         descript.innerHTML = `<p id="description">${value.description}</p>`
         value.colors.forEach(element => {
         colors.innerHTML += `<option value="${element}">${element}</option>`//parcour le tableau des couleurs forEach important!
-           
         })
 
         /****************************************PANIER & LOCAL STORAGE*****************************************/
@@ -42,9 +41,9 @@ urlProduct
             col = e.target.value;
         })
         //permet d'avoir le bon nombre d'article séléctionné
-        let quant = ""
+        let qty = ""
         quantity.addEventListener("change", (e) => {
-            quant = e.target.value
+            qty = parseInt(e.target.value) //changement de valeur JSON en JS
         })
         // Au click de ajouter au panier qu'est ce qu'il se passe ? cela crée une intéraction au click
         addToCart.addEventListener("click", () => {
@@ -52,14 +51,15 @@ urlProduct
             let productSelected = {
                 id: value._id,
                 name: value.name,
-                price: value.price/10,
+                prix: value.price,
                 descript:value.description,
                 image: value.imageUrl,
-                quantity : quant,
+                quantity : qty,
                 colors: col
             }
             /***********************Condition de la couleur & quantité***********************/
             // La condition si les éléments couleur & quantité ne sont pas respecter alors message pour choisir apparaitra sinon on lance la commande
+            
             if (productSelected.colors == "") {
                 alert("Veuillez choisir une couleur") 
             } else if (productSelected.quantity == 0 || productSelected.quantity == "") {
@@ -67,50 +67,54 @@ urlProduct
             } else {
                 stockStorage ();
             }
+            console.log(productSelected.quantity);
+            //réaliser une incrémentation
+            
             // On fait une fonction pour l'ajouter à la condition et comment l'ajout au panier fonctionne ? 
             function stockStorage () {
-                //Rediriger une fois le choix fait avec un pop'up / évite à l'utilisateur de spam "l'ajouter au panier" évite que la valeur du produit soit répété.
-                const popupConfirm = () => {
-                    if (window.confirm(`${productSelected.name} à bien été ajouté au panier, Consultez le panier Ok ou revenir au menu`)) {
-                        window.location.href = "cart.html";
-                    } else {
-                        window.location.href = "index.html";
-                    }
-                }
+                // On va convertir le tableau en tableau JS / qui va ensuite se convertir en chaine de caractère JSON / qui dit caractère dit true & qui dit true dit lisible
+                let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
+                
                 //DRY de l'envoi au panier 
                 const envoiPanier = () => {
                     produitLocalStorage.push(productSelected); 
                     localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+                    alert('Produit ajouter')
                 }
-
-                // On va convertir le tableau en tableau JS / qui va ensuite se convertir en chaine de caractère JSON / qui dit caractère dit true & qui dit true dit lisible
-                let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
                 /***********************Condition du panier***********************/
                 // Si un produit est déjà dans le panier alors on ajoute un produit en+ en chaine de caractère JSON
                 if(produitLocalStorage) {
+                    //le localStorage ajoute un +1 à la quantité
+                    let onePlusQuantity = produitLocalStorage.find(
+                        (element) => 
+                        //Quand les elements égaux entre eux alors la quantité +1 et si on change de couleur cela crée un autre tableau
+                            element.id == productSelected.id && element.colors == productSelected.colors);
+                    if (onePlusQuantity) {
+                        onePlusQuantity.quantity += productSelected.quantity;
+                        localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+                        alert('Produit ajouter')
+                        return;
+                    }
                     envoiPanier();
-                    //popupConfirm();
-
                 } else {
                     //Si le panier est vide, le client envoi le 1er produit en chaine de caractère JSON au clique du "ajouter au panier"
                     produitLocalStorage = []; 
                     envoiPanier ();
-                    //popupConfirm();
-                }  
+                }
             };
-            
         });
     })
     .catch(function (err){
         alert("Veuillez nous excusez, mais les produits ne sont pas disponible pour le moment.")
     })
 
-    /*let quantPlus = produitLocalStorage.find(
-        (element) => 
-            element.id == productSelected.id && element.colors == productSelected.colors
-    );
-    if (quantPlus) {
-        quantPlus.quantity += productSelected.quantity;
-        localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
-        return;
-    }*/
+/*
+//Rediriger une fois le choix fait avec un pop'up / évite à l'utilisateur de spam "l'ajouter au panier" évite que la valeur du produit soit répété.
+const popupConfirm = () => {
+    if (window.confirm(`${productSelected.name} à bien été ajouté au panier, Consultez le panier Ok ou revenir au menu`)) {
+        window.location.href = "cart.html";
+    } else {
+        window.location.href = "index.html";
+    }
+}
+*/
