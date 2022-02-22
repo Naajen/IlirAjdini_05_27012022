@@ -7,6 +7,7 @@ let titre = document.querySelector('#title')
 let descript = document.querySelector('#description')
 let colors = document.querySelector('#colors')
 let quantity = document.querySelector('#quantity')
+let altTxt = document.querySelector('#altTxt')
 let addToCart = document.getElementById("addToCart") //L'id addtocart selectionné
 
 
@@ -27,7 +28,7 @@ urlProduct
             `<div class="item__img">
                 <img src="${value.imageUrl}" alt="${value.altTxt}">
             </div>` 
-        prix.innerHTML = `<span id="price">${value.price / 10 + ' '}</span>` // on a récupéré le prix et diviser par 10 pour ne pas avoir un prix trop excessif 
+        prix.innerHTML = `<span id="price">${value.price + ' '}</span>` // on a récupéré le prix et diviser par 10 pour ne pas avoir un prix trop excessif 
         titre.innerHTML = `<h1 id="title">${value.name}</h1>`
         descript.innerHTML = `<p id="description">${value.description}</p>`
         value.colors.forEach(element => {
@@ -53,6 +54,7 @@ urlProduct
                 name: value.name,
                 prix: value.price,
                 descript:value.description,
+                altTxt:value.altTxt,
                 image: value.imageUrl,
                 quantity : qty,
                 colors: col
@@ -61,13 +63,14 @@ urlProduct
             // La condition si les éléments couleur & quantité ne sont pas respecter alors message pour choisir apparaitra sinon on lance la commande
             
             if (productSelected.colors == "") {
-                alert("Veuillez choisir une couleur") 
+                alert("Veuillez choisir une couleur") ;
             } else if (productSelected.quantity == 0 || productSelected.quantity == "") {
-                alert("Choisir la quantité")
+                alert("Choisir la quantité");
+            } else if (productSelected.quantity >= 100){    
+                alert ("Stock limité à 100 articles")
             } else {
                 stockStorage ();
             }
-            console.log(productSelected.quantity);
             //réaliser une incrémentation
             
             // On fait une fonction pour l'ajouter à la condition et comment l'ajout au panier fonctionne ? 
@@ -76,10 +79,11 @@ urlProduct
                 let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
                 
                 //DRY de l'envoi au panier 
+                const messAjout = alert('Produit ajouter')
                 const envoiPanier = () => {
                     produitLocalStorage.push(productSelected); 
                     localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
-                    alert('Produit ajouter')
+                    messAjout
                 }
                 /***********************Condition du panier***********************/
                 // Si un produit est déjà dans le panier alors on ajoute un produit en+ en chaine de caractère JSON
@@ -87,18 +91,21 @@ urlProduct
                     //le localStorage ajoute un +1 à la quantité
                     let onePlusQuantity = produitLocalStorage.find(
                         (element) => 
-                        //Quand les elements égaux entre eux alors la quantité +1 et si on change de couleur cela crée un autre tableau
-                            element.id == productSelected.id && element.colors == productSelected.colors);
+                            //Quand les elements égaux entre eux alors la quantité +1 et si on change de couleur cela crée un autre tableau
+                            element.id == productSelected.id && element.colors == productSelected.colors);   
                     if (onePlusQuantity) {
                         onePlusQuantity.quantity += productSelected.quantity;
+                        onePlusQuantity.prix += productSelected.prix*productSelected.quantity; // ajoute le prix en+ de la quantité
                         localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
-                        alert('Produit ajouter')
+                        messAjout
                         return;
                     }
+                    productSelected.prix = productSelected.prix*productSelected.quantity;//le prix s'adapte à la quantité au changement de couleur
                     envoiPanier();
                 } else {
                     //Si le panier est vide, le client envoi le 1er produit en chaine de caractère JSON au clique du "ajouter au panier"
-                    produitLocalStorage = []; 
+                    produitLocalStorage = [];
+                    productSelected.prix = productSelected.prix*productSelected.quantity;//le prix s'adapte à la quantité
                     envoiPanier ();
                 }
             };
