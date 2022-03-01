@@ -15,7 +15,7 @@ let addToCart = document.getElementById("addToCart") //L'id addtocart selectionn
 let params = (new URL(document.location)).searchParams;
 let id = params.get("id"); //cela récupère l'id en haut dans la console
 /****************************************API ID*****************************************/
-const urlProduct = fetch("http://localhost:3000/api/products/" + id); //on a pris l'id plus haut id = ${id}
+const urlProduct = fetch(`http://localhost:3000/api/products/` + id); //on a pris l'id plus haut id = ${id}
 urlProduct
     .then((res) => {
      if (res.ok) {
@@ -79,7 +79,7 @@ urlProduct
                 let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
                 
                 //DRY de l'envoi au panier 
-                const messAjout = alert('Produit ajouter')
+                const messAjout = alert('Produit ajouter à vôtre panier')
                 const envoiPanier = () => {
                     produitLocalStorage.push(productSelected); 
                     localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
@@ -114,14 +114,3 @@ urlProduct
     .catch(function (err){
         alert("Veuillez nous excusez, mais les produits ne sont pas disponible pour le moment.")
     })
-
-/*
-//Rediriger une fois le choix fait avec un pop'up / évite à l'utilisateur de spam "l'ajouter au panier" évite que la valeur du produit soit répété.
-const popupConfirm = () => {
-    if (window.confirm(`${productSelected.name} à bien été ajouté au panier, Consultez le panier Ok ou revenir au menu`)) {
-        window.location.href = "cart.html";
-    } else {
-        window.location.href = "index.html";
-    }
-}
-*/
