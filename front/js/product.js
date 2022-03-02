@@ -57,7 +57,8 @@ urlProduct
                 altTxt:value.altTxt,
                 image: value.imageUrl,
                 quantity : qty,
-                colors: col
+                colors: col,
+                uniqueId: id + col
             }
             /***********************Condition de la couleur & quantité***********************/
             // La condition si les éléments couleur & quantité ne sont pas respecter alors message pour choisir apparaitra sinon on lance la commande
@@ -81,7 +82,7 @@ urlProduct
                 //DRY de l'envoi au panier 
                 const messAjout = alert('Produit ajouter à vôtre panier')
                 const envoiPanier = () => {
-                    produitLocalStorage.push(productSelected); 
+                    produitLocalStorage.push(productSelected);
                     localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
                     messAjout
                 }

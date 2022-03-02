@@ -1,4 +1,4 @@
-//Cherche le produit dans le local storage
+//Cherche le produit dans le local storage en format PARSE
 let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
 
 //Ou injecter dans la partie panier
@@ -40,6 +40,34 @@ const lePanier = () => {
                 </div>
             </div>
         </article>`;
+
+        const calculPrix_Quantity = () => {
+        /*****************************TOTAL QUANTITE & PRIX DU PANIER***********************************/
+        //déclarer un tableau vide pour y mettre une valeur ici c'est la quantité total
+        let totalArticle = [];
+        let totalPrix = [];
+        //parcourir le tableau
+        for (k = 0; k < produitLocalStorage.length; k++) {
+        //crée une variable de l'ensemble de la quantité du tableau
+       let quantityTotal = produitLocalStorage[k].quantity;
+        //grâce au push j'envoi le tableau de quantité au total d'article
+        totalArticle.push(quantityTotal);
+        //Mais on envoi aussi le prix pour rester dynamique dans le prix
+        let quantityPrix = produitLocalStorage[k].prix;
+        //Le prix s'adapte en fonction de la quantité
+        totalPrix.push(quantityPrix * quantityTotal);
+        }
+        //une déclaration de reducer permet d'additionné toutes les valeurs du tableau
+        const reducer = (accumulator, currentValue) => accumulator + currentValue;
+        //une fois le tableau rempli on les additionnes grâce au reducer variable en haut avec une valeur initial de 0 pour évité les erreurs dans la console
+        const allArticles = totalArticle.reduce(reducer,0);
+        const allPrice = totalPrix.reduce(reducer,0);
+        //on injecte le montant total dans la bonne balise HTML
+        totalPrice.innerHTML = `<span id="totalPrice">${allPrice}</span>`;
+        totalQuantity.innerHTML = `<span id="totalQuantity">${allArticles}</span>`;
+        }
+        calculPrix_Quantity();
+
     }
 
     let btnQuantity = document.querySelectorAll('.itemQuantity');
@@ -56,15 +84,17 @@ const lePanier = () => {
     //Parcours le tableau du btn supprimer **************SUPPRIME UN ELEMENT GRACE EN FONCTION DE LA COULEUR*****************
     const supprimer = () => {    
         let suppBtn = document.querySelectorAll(".deleteItem")
-        for (let l = 0; l < suppBtn.length; l++){
+        let itemSelected = document.querySelectorAll('.cart__item');
+
+        console.log(itemSelected);
+        for (let l = 0; l < itemSelected.length; l++){
             //Au click du btn on supprime un éléments sur la page & dans le local storage
             suppBtn[l].addEventListener('click', (events) => {
                 events.preventDefault();
-                let colorSelect = produitLocalStorage[l].colors;
-                //supprimer la selection avec filter() mais en version contraire avec le !==
-                produitLocalStorage = produitLocalStorage.filter(el => el.colors !== colorSelect);
-                //Met à jour le localstorage
+                let idOne = produitLocalStorage[l].uniqueId
+                produitLocalStorage = produitLocalStorage.filter(el => el.uniqueId !== idOne);
                 localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+                document.location.reload();
                 alert('Produit supprimé')
                 window.location.href = "cart.html";
             });
@@ -72,31 +102,12 @@ const lePanier = () => {
     }
     supprimer();
 
-    /*****************************TOTAL QUANTITE & PRIX DU PANIER**********************************/
 
-    //déclarer un tableau vide pour y mettre une valeur ici c'est la quantité total
-    let totalArticle = [];
-    let totalPrix = [];
-    //parcourir le tableau
-    for (k = 0; k < produitLocalStorage.length; k++) {
-        //crée une variable de l'ensemble de la quantité du tableau
-       let quantityTotal = produitLocalStorage[k].quantity;
-        //grâce au push j'envoi le tableau de quantité au total d'article
-        totalArticle.push(quantityTotal);
-        //Mais on envoi aussi le prix pour rester dynamique dans le prix
-        let quantityPrix = produitLocalStorage[k].prix;
-        //Le prix s'adapte en fonction de la quantité
-        totalPrix.push(quantityPrix * quantityTotal);
-    }
-    //une déclaration de reducer permet d'additionné toutes les valeurs du tableau
-    const reducer = (accumulator, currentValue) => accumulator + currentValue;
-    //une fois le tableau rempli on les additionnes grâce au reducer variable en haut avec une valeur initial de 0 pour évité les erreurs dans la console
-    const allArticles = totalArticle.reduce(reducer,0);
-        const allPrice = totalPrix.reduce(reducer,0);
-        //on injecte le montant total dans la bonne balise HTML
-        totalPrice.innerHTML = `<span id="totalPrice">${allPrice}</span>`;
-        totalQuantity.innerHTML = `<span id="totalQuantity">${allArticles}</span>`;
 
+}
+const  leFormulaire = () => {
+
+    
     /*****************************************PRENOM******************************************/
     formPrenom.addEventListener('change', function() { 
         validPrenom (this);
@@ -210,6 +221,7 @@ const lePanier = () => {
         }
     });
 }
+leFormulaire ();
 
 //Si panier vide retour à la page d'acceuil Sinon accès au Panier
 if (produitLocalStorage === null || produitLocalStorage == 0 || produitLocalStorage === []) {
@@ -217,13 +229,24 @@ if (produitLocalStorage === null || produitLocalStorage == 0 || produitLocalStor
     window.location.href = "index.html";
 } else {
     lePanier();
+    leFormulaire();
 };
 
 
 /*
-                const request = {
-                    method: "POST",
-                    body: JSON.stringify(order),
-                    headers: { "Content-Type": "application/json" },
-                };
+const request = {
+method: "POST",
+body: JSON.stringify(order),
+headers: { "Content-Type": "application/json" },
+};
+*/
+
+/* 
+let colorSelect = produitLocalStorage[l].colors;
+//supprimer la selection avec filter() mais en version contraire avec le !==
+produitLocalStorage = produitLocalStorage.filter(el => el.colors !== colorSelect);
+//Met à jour le localstorage
+localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+alert('Produit supprimé')
+window.location.href = "cart.html";
 */
