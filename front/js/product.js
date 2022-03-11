@@ -13,14 +13,14 @@ let addToCart = document.getElementById("addToCart")
 /****************************************ID dans URL*****************************************/
 /********************************************************************************************/
 
-// Cela permet de récuperer l'id en haut dans l'URL
+// Cela permet de récuperer l'id en haut dans l'URL parse url
 let params = (new URL(document.location)).searchParams;
-let id = params.get("id"); 
+let id = params.get("id");
 
 /****************************************API ID*****************************************/
 /***************************************************************************************/
 
-// J'ai pris l'id plus haut "id = ${id}" que j'ai ajouter a l'url du fetch pour qu'il me donne une page avec id du produit
+// J'ai pris l'id plus haut "id = ${id}" que j'ai ajouter a l'url du fetch pour qu'il me donne une page avec id concatener l'url + id 
 const urlProduct = fetch(`http://localhost:3000/api/products/` + id);
 urlProduct
     .then((res) => {

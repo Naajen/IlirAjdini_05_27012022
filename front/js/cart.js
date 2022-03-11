@@ -117,121 +117,115 @@ const lePanier = () => {
     let cityErrorMessage = document.querySelector("#cityErrorMsg");  
     let emailErrorMessage = document.querySelector("#emailErrorMsg"); 
     //Espace formulaire & le button ajouter au panier
-    let formAll = document.getElementsByClassName("cart__order__form");
     let formOrder = document.getElementById("order");
-    /**********PRENOM**********/
-    formPrenom.addEventListener('change', function() { 
-        validPrenom (this);
-    })
-    const validPrenom = function (btnPrenom) {
-            //expression rationnelle afin d'évité certain caractère dans les cases généré sur internet
-            let prenomRegExp = new RegExp ("^[a-z]+[ \-']?[[a-z]+[ \-']?]*[a-z]+$", "gi");
-            //test vérifie s'il y a une correspondance entre un texte et une expression rationnelle. Elle retourne true en cas de succès et false dans le cas contraire.
-            let essaiPrenom = prenomRegExp.test(btnPrenom.value)
-            if (essaiPrenom ) {
-                prenomErrorMessage.innerHTML = `Prénom Valide ✔`;
-                prenomErrorMessage.style.color = '#FFFFFF';
-            } else {
-                prenomErrorMessage.innerHTML = `${btnPrenom.value} n'est pas valide ✘`;
-                btnPrenom.value = "";
-                return validPrenom();
-            }
+
+    //verif expression regulière
+    function prenomControl () {
+        let regexPrenom = formPrenom.value;
+        if (/^[A-Za-z]{2,30}$/.test(regexPrenom)) {
+            prenomErrorMessage.innerHTML = 'Valide'
+            prenomErrorMessage.style.color = '#ffffff'
+            formPrenom.style.boxShadow =''
+            formPrenom.style.boxSizing = ''
+            return true;
+        } else {
+            formPrenom.style.boxShadow ='0px 0px 10px #FF0000'
+            formPrenom.style.boxSizing = 'border-box'
+            prenomErrorMessage.innerHTML = 'Invalide'
+            return false;
+        }
     }
 
-    /**********NOM**********/
-    formNom.addEventListener('change', function() { 
-        validNom (this);
-    })
-    const validNom = function (btnNom) {
-            let nomRegExp = new RegExp ("^[a-z]+[ \-']?[[a-z]+[ \-']?]*[a-z]+$", "gi");
-            let essaiNom = nomRegExp.test(btnNom.value)
-            if (essaiNom) {  
-                nomErrorMessage.innerHTML = "Nom Valide ✔";
-                nomErrorMessage.style.color = '#FFFFFF';
-            } else {
-                nomErrorMessage.innerHTML = `${btnNom.value} n'est pas valide ✘`;
-                btnNom.value = "";
-                return validNom();
-            }
-
+    function nomControl () {
+        let regexNom = formNom.value;
+        if (/^[A-Za-z]{2,30}$/.test(regexNom)) {
+            nomErrorMessage.innerHTML = 'Valide'
+            nomErrorMessage.style.color = '#ffffff'
+            formNom.style.boxShadow =''
+            formNom.style.boxSizing = ''
+            return true;
+        } else {
+            nomErrorMessage.innerHTML = 'Invalide'
+            formNom.style.boxShadow ='0px 0px 10px #FF0000'
+            formNom.style.boxSizing = 'border-box'
+            return false;
+        }
     }
 
-    /**********VILLE**********/
-    formVille.addEventListener('change', function() { 
-        validVille(this);
-    })
-    const validVille =  function (btnVille) {
-            let villeRegExp = new RegExp (`^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$`);
-            let essaiVille = villeRegExp.test(btnVille.value) 
-            if (essaiVille) {
-                cityErrorMessage.innerHTML = "Ville Valide ✔";
-                cityErrorMessage.style.color = '#FFFFFF';
-            } else {
-                cityErrorMessage.innerHTML = `${btnVille.value} n'est pas valide ✘`;
-                btnVille.value = "";
-                return validVille();
-            }
-    }
-
-    /**********ADRESSE**********/
-    formAdress.addEventListener('change', function() { 
-        validAdress(this);
-    })
-    const validAdress = function (btnAddress) {
-            let addressRegExp = new RegExp ('^[ a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s -]*$', 'g'); //rajouter la présence d'un code postal et d'une numéro de rue
-            let essaiAddress = addressRegExp.test(btnAddress.value) /* .test vérifie s'il y a une correspondance entre un texte et une expression rationnelle. Elle retourne true en cas de succès et false dans le cas contraire.*/
-            if (essaiAddress) {
-                addressErrorMessage.innerHTML = "Adresse Valide ✔";
-                addressErrorMessage.style.color = '#FFFFFF'; 
-            } else {
-                addressErrorMessage.innerHTML = `${btnAddress.value} n'est pas valide ✘`;
-                btnAddress.value = "";
-                return validAdress();
-            }
-    }
-
-    /**********EMAIL**********/
-    formMail.addEventListener('change', function() { 
-        validMail(this);
-    });
-    const validMail = function (btnMail){
-            let mailRegExp = new RegExp('^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$');
-            let essaiMail = mailRegExp.test(btnMail.value);
-            /* .test vérifie s'il y a une correspondance entre un texte et une expression rationnelle. Elle retourne true en cas de succèset false dans le cas contraire.*/
-            if (essaiMail) {
-                emailErrorMessage.innerHTML = "Email Valide ✔";
-                emailErrorMessage.style.color = '#FFFFFF';
-            } else {
-                emailErrorMessage.innerHTML = `"${btnMail.value} n'est pas valide ✘`;
-                btnMail.value = "";
-                return validMail();
-            }
-
+    function cityControl () {
+        let regexCity = formVille.value;
+        if (/^[A-Za-z]{2,30}$/.test(regexCity)) {
+            cityErrorMessage.innerHTML = 'Valide'
+            cityErrorMessage.style.color = '#ffffff'
+            formVille.style.boxShadow =''
+            formVille.style.boxSizing =''
+            return true;
+        } else {
+            cityErrorMessage.innerHTML = 'Invalide'
+            formVille.style.boxShadow ='0px 0px 10px red'
+            formVille.style.boxSizing = 'border-box'
+            return false;
+        }
     }
     
+    function addressControl () {
+        let regexAddress = formAdress.value;
+        if (/^[a-zA-Z0-9\s,.'-]{3,}$/ .test(regexAddress)) {
+            addressErrorMessage.innerHTML = 'Valide'
+            addressErrorMessage.style.color = '#ffffff'
+            formAdress.style.boxShadow =''
+            formAdress.style.boxSizing =''
+        } else {
+            addressErrorMessage.innerHTML = 'Invalide'
+            formAdress.style.boxShadow ='0px 0px 10px red'
+            formAdress.style.boxSizing = 'border-box'
+            return false;
+        }
+    }
+    
+    function mailControl () {
+        let regexMail = formMail.value;
+        if (/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(regexMail)) {
+            emailErrorMessage.innerHTML = 'Valide'
+            emailErrorMessage.style.color = '#ffffff'
+            formMail.style.boxShadow =''
+            formMail.style.boxSizing =''
+        } else {
+            emailErrorMessage.innerHTML = 'Invalide'
+            formMail.style.boxShadow ='0px 0px 10px red'
+            formMail.style.boxSizing = 'border-box'
+            return false;
+        }
+    }
+
     /***********************************COMMANDER***********************************/
     /*******************************************************************************/
-    const submitAll = () => {
+    const  submitAll = async () => {
         const contact = {
-            firstName: `${formNom.value}`,
-            lastName: `${formPrenom.value}`,
-            address: `${formAdress.value}`,
+            firstName: `${formPrenom.value}`,
+            lastName: `${formNom.value}`,
             city: `${formVille.value}`,
+            address: `${formAdress.value}`,
             email: `${formMail.value}`
         }
         localStorage.setItem("contact", JSON.stringify(contact));
-
+        
         let products = []
             for(h = 0; h < produitLocalStorage.length; h++){
                 products.push(produitLocalStorage[h].id);
             }
-        let envoiProducts = {contact, products};
 
-            fetch("http://localhost:3000/api/products/order", {
-            method: "POST",
-            body: JSON.stringify(envoiProducts),
-            headers: {"content-type" : "application/json",}   
+        let envoiProducts =  {contact, products};
+        console.log(envoiProducts);
+        
+        await fetch("http://localhost:3000/api/products/order", {
+        
+        method: "POST",
+        body: JSON.stringify(envoiProducts),
+        headers: {"content-type" : "application/json",}
+
         })
+
         .then(res => {
             return res.json();
         }).then((data) => {
@@ -241,31 +235,22 @@ const lePanier = () => {
             console.log(err);
         })
     }
-    //formAll.addEventListener("submit", function(evts){})
-    
-    formOrder.addEventListener("click", function (event) {
-        event.preventDefault;
-        //Si le formulaire est vide un message d'alert
-        if (formNom.value == "" || formPrenom.value == ""|| formAdress.value== "" || formMail.value == "" ||  formVille.value == "" ) {
-            alert('Veuillez remplir le formulaire correctement');
-            return event.preventDefault();
+    formOrder.addEventListener("click", (e) => {
+        e.preventDefault()
+        if (prenomControl() === false || nomControl() === false || addressControl() === false || cityControl() === false || mailControl () === false) {
+            const commander = document.getElementById('order')
+            commander.setAttribute('value', 'Veuillez remplir tous les champs et cliquer')
+            return e.preventDefault();
         } else {
-           submitAll();
+            submitAll();
         }
-    });
+    })
 }
 
 //Si panier vide retour à la page d'acceuil pour séléctionner un produit Sinon accès au Panier +
-if (produitLocalStorage === null || produitLocalStorage == 0 || produitLocalStorage == []) {
+if (produitLocalStorage === null || produitLocalStorage === 0 || produitLocalStorage === []) {
     alert("Veuillez séléctionné un produit pour continuer vos achats, vous allez être redirigé vers la page d'acceuil");
     window.location.href = "index.html";
 } else {
     lePanier();
 };
-
-/*
-formMail.value =="" || formVille.value =="" || formAdress.value=="" || formPrenom.value =="" || formNom.value ==""
-!formMail.value || !formVille.value || !formAdress.value || !formPrenom.value || !formNom.value
-!formMail || !formVille || !formAdress || !formPrenom || !formNom
-validMail(formMail.value) === false || validVille(formVille.value) === false || validAdress(formAdress.value) === false || validPrenom(formPrenom.value) === false || validNom(formNom.value)=== false
-*/
